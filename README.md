@@ -1,16 +1,4 @@
----
-title: CineMatch AI Movie Recommender
-emoji: 🎬
-colorFrom: indigo
-colorTo: blue
-sdk: streamlit
-sdk_version: 1.32.0
-app_file: streamlit_app.py
-pinned: false
----
-
 # CineMatch: AI-Powered Movie Recommendation & Discovery Engine
-
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![Machine Learning](https://img.shields.io/badge/ML-Scikit--Learn-orange?logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)

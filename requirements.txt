@@ -6,4 +6,3 @@ joblib
 waitress
 python-dotenv
 requests
-streamlit
