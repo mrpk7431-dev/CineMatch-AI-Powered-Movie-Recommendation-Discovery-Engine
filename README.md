@@ -1,34 +1,53 @@
 # CineMatch: AI-Powered Movie Recommendation & Discovery Engine
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
-[![Machine Learning](https://img.shields.io/badge/ML-Scikit--Learn-orange?logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
-[![Web Framework](https://img.shields.io/badge/Backend-Flask-black?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
-[![API](https://img.shields.io/badge/Data-TMDB%20REST%20API-01d277?logo=themoviedatabase&logoColor=white)](https://www.themoviedb.org/)
-[![Server](https://img.shields.io/badge/WSGI-Waitress-red)](https://github.com/Pylons/waitress)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+<div align="center">
 
-> An end-to-end Machine Learning web application that delivers high-accuracy movie recommendations using Content-Based Filtering (TF-IDF & Cosine Similarity) and real-time internet movie discovery powered by the TMDB API.
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Online%20on%20Render-00c7b7?style=for-the-badge&logo=render&logoColor=white)](https://cinematch-ai-smt8.onrender.com/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Machine Learning](https://img.shields.io/badge/ML-Scikit--Learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![Backend](https://img.shields.io/badge/Backend-Flask-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![API](https://img.shields.io/badge/Data-TMDB%20API-01d277?style=for-the-badge&logo=themoviedatabase&logoColor=white)](https://www.themoviedb.org/)
+
+**[🌐 Click Here to Open Live Application](https://cinematch-ai-smt8.onrender.com/)**
+
+</div>
+
+> **CineMatch** is an end-to-end Machine Learning web application that delivers high-precision, personalized movie recommendations using Content-Based Filtering (TF-IDF & Cosine Similarity), combined with real-time internet movie discovery powered by the TMDB REST API.
 
 ---
 
 ## 📌 Table of Contents
+- [Live Demo](#-live-demo)
 - [Overview](#-overview)
 - [Key Features](#-key-features)
 - [System Architecture](#-system-architecture)
 - [Tech Stack](#-tech-stack)
+- [Machine Learning Pipeline](#-machine-learning-pipeline)
 - [Project Structure](#-project-structure)
 - [Quick Start Guide](#-quick-start-guide)
-- [Machine Learning Workflow](#-machine-learning-workflow)
+- [Deployment](#-deployment)
 - [License](#-license)
+
+---
+
+## 🌐 Live Demo
+
+The application is deployed and live in production on Render:
+
+| Service | Link | Status |
+|---|---|---|
+| **Production Web App** | [https://cinematch-ai-smt8.onrender.com/](https://cinematch-ai-smt8.onrender.com/) | ![Operational](https://img.shields.io/badge/Status-Operational-brightgreen) |
+
+> *Note: On Render's free tier, the service may take ~30 seconds to wake up if inactive.*
 
 ---
 
 ## 📖 Overview
 
-Finding the right movie to watch across thousands of options is overwhelming. **CineMatch** solves this challenge by combining a pre-trained **Content-Based Recommendation Model** with **Live Web Search**:
+Finding the right movie across thousands of titles can be overwhelming. **CineMatch** solves this challenge by combining a pre-trained **Content-Based Recommendation Engine** with **Live Web Discovery**:
 
-1. **Intelligent Recommendations:** Uses mathematical distance (Cosine Similarity) across 5,000 text features (genres, plot, cast, and director) to find closely matching movies.
-2. **Real-Time Discovery:** Connects directly with the TMDB REST API to search internet movies, fetch HD posters, and filter titles by genre (Action, Sci-Fi, Comedy, Thriller, etc.) and release year.
+1. **Intelligent Recommendations:** Uses mathematical distance (**Cosine Similarity**) across **5,000 text features** (genres, plot synopsis, keywords, cast, and director) to find closely matching movies in under 15ms.
+2. **Real-Time Discovery:** Connects directly with the **TMDB REST API** to search internet movies, fetch HD posters, and filter titles by genre (Action, Sci-Fi, Comedy, Thriller, etc.) and release year (1980–2026).
 
 ---
 
@@ -39,7 +58,7 @@ Finding the right movie to watch across thousands of options is overwhelming. **
 - **🔍 Typo-Tolerant Search:** Intelligent fuzzy title matching handles user spelling mistakes gracefully.
 - **🎭 Multi-Genre & Year Filtering:** Dedicated filters for Action, Sci-Fi, Drama, Romance, Classics, and modern releases (1980–2026).
 - **📊 Transparent Similarity Scores:** Displays match percentage and metadata (release date, vote average, runtime, cast, director).
-- **⚡ One-Click Startup:** Includes `run.bat` for automatic `.venv` activation, production server launch, and instant browser opening.
+- **⚡ One-Click Local Startup:** Includes `run.bat` for automatic `.venv` activation, production server launch, and instant browser opening.
 
 ---
 
@@ -82,7 +101,19 @@ Finding the right movie to watch across thousands of options is overwhelming. **
 | **Algorithms** | Content-Based Filtering, TF-IDF Vectorizer, Cosine Similarity |
 | **Backend & Server** | Flask, Waitress (Production WSGI) |
 | **External APIs** | TMDB (The Movie Database) REST API |
-| **Frontend** | HTML5, Vanilla CSS (Glassmorphism / Dark Theme), JavaScript |
+| **Frontend** | HTML5, Vanilla CSS (Cinematic Dark Theme / Glassmorphism), JavaScript |
+| **Deployment** | Render Cloud, Git, GitHub |
+
+---
+
+## 🧠 Machine Learning Pipeline
+
+1. **Metadata Aggregation:** Combines multiple high-signal textual attributes into a unified representation:
+   $$\text{Combined Features} = \text{Genres} + \text{Keywords} + \text{Top Cast} + \text{Director} + \text{Plot Overview}$$
+2. **Text Vectorization:** Converts combined text into mathematical vectors using `TfidfVectorizer(max_features=5000, stop_words='english')`.
+3. **Similarity Calculation:** Measures the angle between movie vectors using **Cosine Similarity**:
+   $$\text{Cosine Similarity}(A, B) = \frac{A \cdot B}{\|A\| \|B\|}$$
+4. **Fast Inference:** Similarity scores are precomputed into a matrix, enabling sub-15ms recommendation lookups during runtime.
 
 ---
 
@@ -132,8 +163,8 @@ run.bat
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/cinematch-movie-recommender.git
-   cd cinematch-movie-recommender
+   git clone https://github.com/mrpk7431-dev/CineMatch-AI-Powered-Movie-Recommendation-Discovery-Engine.git
+   cd CineMatch-AI-Powered-Movie-Recommendation-Discovery-Engine
    ```
 
 2. **Create and activate a virtual environment:**
@@ -158,12 +189,7 @@ run.bat
    TMDB_API_KEY=your_tmdb_api_key_here
    ```
 
-5. **(Optional) Train or Retrain the Model:**
-   ```bash
-   python src/train.py
-   ```
-
-6. **Start the Application:**
+5. **Start the Application:**
    ```bash
    python run.py
    ```
@@ -171,19 +197,17 @@ run.bat
 
 ---
 
-## 🧠 Machine Learning Workflow
+## ☁️ Deployment
 
-1. **Metadata Aggregation:** Combines multiple high-signal textual attributes:
-   $$\text{Combined Features} = \text{Genres} + \text{Keywords} + \text{Top Cast} + \text{Director} + \text{Plot Overview}$$
-2. **Text Vectorization:** Converts combined text into mathematical vectors using `TfidfVectorizer(max_features=5000, stop_words='english')`.
-3. **Similarity Calculation:** Measures the angle between movie vectors using **Cosine Similarity**:
-   $$\text{Cosine Similarity}(A, B) = \frac{A \cdot B}{\|A\| \|B\|}$$
-4. **Fast Inference:** Similarity scores are precomputed into a matrix, enabling sub-15ms recommendation lookups during runtime.
+This project is configured for cloud hosting on **Render**:
+- **Build Command:** `pip install -r requirements.txt`
+- **Start Command:** `python run.py`
+- **Environment Variable:** `TMDB_API_KEY`
+
+`run.py` dynamically binds to `0.0.0.0` and the port assigned by the hosting environment (`$PORT`), allowing seamless deployment across any cloud provider.
 
 ---
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-"# CineMatch-AI-Powered-Movie-Recommendation-Discovery-Engine" 
-"# CineMatch-AI-Powered-Movie-Recommendation-Discovery-Engine" 
