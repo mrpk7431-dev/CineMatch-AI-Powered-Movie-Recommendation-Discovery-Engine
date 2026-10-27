@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-content">
+
+        <h1 class="hero-title">
+            <span class="hero-line hero-line-1">DISCOVER YOUR NEXT</span>
+            <span class="hero-line hero-line-2">FAVORITE MOVIE</span>
+        </h1>
+        <p class="subtitle">Search millions of movies and get AI-powered personalized recommendations.</p>
+        
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <div class="search-container">
+            <form action="/explore" method="GET" class="unified-search-bar">
+                
+                <div class="search-group">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="movie-input" name="query" placeholder="Find a movie..." autocomplete="off">
+                    <div id="autocomplete-list" class="autocomplete-items"></div>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="search-group select-group">
+                    <select name="genre" class="filter-select">
+                        <option value="">Genre</option>
+                        <option value="Action">Action</option>
+                        <option value="Adventure">Adventure</option>
+                        <option value="Comedy">Comedy</option>
+                        <option value="Drama">Drama</option>
+                        <option value="Sci-Fi">Sci-Fi</option>
+                        <option value="Horror">Horror</option>
+                        <option value="Thriller">Thriller</option>
+                        <option value="Animation">Animation</option>
+                    </select>
+                </div>
+
+                <div class="divider"></div>
+                
+                <div class="search-group select-group">
+                    <select name="year" class="filter-select">
+                        <option value="">Year</option>
+                        {% for y in available_years %}
+                        <option value="{{ y.value }}">{{ y.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-primary search-btn">
+                    <span>Explore</span>
+                </button>
+            </form>
+        </div>
+        
+
+        
+    </div>
+</div>
+
+{% if popular %}
+<div class="popular-section">
+    <div class="section-title-wrap">
+        <h2 class="section-title">Top 20 All-Time Acclaimed Movies</h2>
+        <span class="section-badge">Ranked by ML Composite Score</span>
+    </div>
+    <div class="movie-grid">
+        {% for movie in popular %}
+        <a href="/movie/{{ movie.movie_id }}" class="movie-card">
+            <span class="rank-badge rank-{{ loop.index if loop.index <= 3 else 'normal' }}">#{{ loop.index }}</span>
+            {% if movie.poster_url %}
+            <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster" loading="lazy">
+            {% else %}
+            <div class="movie-poster placeholder-poster">
+                <span>{{ movie.title[0] if movie.title else '?' }}</span>
+                <p>No Poster Available</p>
+            </div>
+            {% endif %}
+            
+            <div class="movie-info">
+                <h3>{{ movie.title }}</h3>
+                <div class="movie-meta">
+                    <span class="year">{{ movie.release_year }}</span>
+                    <span class="rating">⭐ {{ movie.rating }}</span>
+                </div>
+                {% if movie.genre %}
+                <div class="movie-genre">{{ movie.genre }}</div>
+                {% endif %}
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<script>
+// Handle unified form submission
+document.querySelector('.unified-search-bar').addEventListener('submit', function(e) {
+    const queryInput = document.getElementById('movie-input');
+    const genreSelect = document.querySelector('select[name="genre"]').value;
+    const yearSelect = document.querySelector('select[name="year"]').value;
+    
+    // If only a movie name is typed, go to search results instead of explore
+    if (queryInput.value && !genreSelect && !yearSelect) {
+        e.preventDefault();
+        window.location.href = '/search?q=' + encodeURIComponent(queryInput.value);
+    }
+});
+</script>
+{% endblock %}

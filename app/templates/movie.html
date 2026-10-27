@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ movie.title }} ({{ movie.release_year }}) - CineMind{% endblock %}
+
+{% block content %}
+{% if movie.backdrop_url or movie.poster_url %}
+<div class="ambient-backdrop" style="background-image: url('{{ movie.backdrop_url if movie.backdrop_url else movie.poster_url }}');"></div>
+{% endif %}
+
+<div class="movie-details-page">
+    <div class="breadcrumb-nav">
+        <a href="/"><i class="fas fa-home"></i> Home</a>
+        <span class="breadcrumb-separator"><i class="fas fa-chevron-right"></i></span>
+        <span class="breadcrumb-current">{{ movie.title }}</span>
+    </div>
+
+    <div class="movie-header">
+        <div class="movie-poster-large">
+            {% if movie.poster_url %}
+            <div class="poster-wrapper">
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" loading="lazy">
+                {% if movie.rated and movie.rated != 'N/A' %}
+                <span class="badge-rated">{{ movie.rated }}</span>
+                {% endif %}
+            </div>
+            {% else %}
+            <div class="placeholder-poster large">
+                <span>{{ movie.title[0] if movie.title else '?' }}</span>
+                <p>No Poster Available</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="movie-info-large">
+            <h1 class="movie-title">{{ movie.title }}</h1>
+            
+            <div class="meta-row">
+                {% if movie.release_year and movie.release_year != 'N/A' %}
+                <span class="meta-item year"><i class="far fa-calendar-alt"></i> {{ movie.release_year }}</span>
+                {% endif %}
+                
+                <span class="meta-item rating">
+                    <i class="fas fa-star star-icon"></i> <strong>{{ movie.rating }}</strong>
+                    {% if movie.vote_count and movie.vote_count != 0 and movie.vote_count != '0' %}
+                    <span class="vote-count">({{ movie.vote_count }} votes)</span>
+                    {% endif %}
+                </span>
+                
+                {% if movie.runtime and movie.runtime != 0 and movie.runtime != '0' %}
+                <span class="meta-item runtime"><i class="far fa-clock"></i> {{ movie.runtime }} min</span>
+                {% endif %}
+                
+                {% if movie.original_language %}
+                <span class="meta-item language"><i class="fas fa-globe"></i> {{ movie.original_language|upper }}</span>
+                {% endif %}
+            </div>
+            
+            {% if movie.genres %}
+            <div class="genres">
+                {% for genre in movie.genres %}
+                    <a href="/explore?genre={{ genre }}" class="tag">{{ genre }}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <div class="synopsis">
+                <h3>Overview</h3>
+                <p>{{ movie.overview }}</p>
+            </div>
+            
+            <div class="cast-crew">
+                {% if movie.director and movie.director != 'nan' and movie.director != 'N/A' %}
+                <div class="crew-item">
+                    <span class="crew-label"><i class="fas fa-video"></i> Director</span>
+                    <span class="crew-value">{{ movie.director }}</span>
+                </div>
+                {% endif %}
+                
+                {% if movie.cast and movie.cast != 'nan' and movie.cast != 'N/A' %}
+                <div class="crew-item">
+                    <span class="crew-label"><i class="fas fa-users"></i> Cast</span>
+                    <span class="crew-value">{{ movie.cast }}</span>
+                </div>
+                {% endif %}
+
+                {% if movie.awards and movie.awards != 'N/A' %}
+                <div class="crew-item">
+                    <span class="crew-label"><i class="fas fa-trophy"></i> Awards</span>
+                    <span class="crew-value awards-text">{{ movie.awards }}</span>
+                </div>
+                {% endif %}
+
+                {% if movie.box_office and movie.box_office != 'N/A' %}
+                <div class="crew-item">
+                    <span class="crew-label"><i class="fas fa-ticket-alt"></i> Box Office</span>
+                    <span class="crew-value">{{ movie.box_office }}</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="actions">
+                {% if similar_movies %}
+                <a href="#similar-movies-section" class="btn-primary scroll-btn">
+                    <i class="fas fa-wand-magic-sparkles"></i> View AI Recommendations
+                </a>
+                {% endif %}
+                
+                <form action="/recommend" method="POST" class="inline-form">
+                    <input type="hidden" name="movie" value="{{ movie.title }}">
+                    <button type="submit" class="btn-secondary">
+                        <i class="fas fa-layer-group"></i> Extended 10-Match List
+                    </button>
+                </form>
+
+                <a href="/" class="btn-outline">
+                    <i class="fas fa-arrow-left"></i> Back to Browse
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    {% if similar_movies %}
+    <div class="similar-movies-section" id="similar-movies-section">
+        <div class="section-header-box">
+            <div class="section-tag"><i class="fas fa-sparkles"></i> Machine Learning Vector Similarity</div>
+            <h2>Similar Movies You'll Love</h2>
+            <p>Recommendations calculated using cosine similarity on plot themes, cast, and genres</p>
+        </div>
+        
+        <div class="movie-grid">
+            {% for sim_movie in similar_movies %}
+            <div class="movie-card">
+                <div class="card-poster-wrapper">
+                    {% if sim_movie.poster_url %}
+                    <img src="{{ sim_movie.poster_url }}" alt="{{ sim_movie.title }}" class="movie-poster" loading="lazy">
+                    {% else %}
+                    <div class="movie-poster placeholder-poster">
+                        <span>{{ sim_movie.title[0] if sim_movie.title else '?' }}</span>
+                        <p>No Poster</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if sim_movie.score %}
+                    <div class="match-badge">
+                        <i class="fas fa-bolt"></i> {{ sim_movie.score }}% Match
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="movie-info">
+                    <h3 title="{{ sim_movie.title }}">{{ sim_movie.title }}</h3>
+                    <div class="movie-meta">
+                        <span class="year">{{ sim_movie.release_year }}</span>
+                        <span class="rating">⭐ {{ sim_movie.rating }}</span>
+                    </div>
+                    
+                    {% if sim_movie.score %}
+                    <div class="match-score">
+                        <div class="match-bar"><div class="match-fill" style="width: {{ sim_movie.score }}%"></div></div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if sim_movie.reasons %}
+                    <div class="match-reasons-preview">
+                        {% for reason in sim_movie.reasons[:2] %}
+                        <span class="reason-pill"><i class="fas fa-check"></i> {{ reason }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="action-buttons">
+                        <a href="/movie/{{ sim_movie.movie_id }}" class="btn-sm btn-secondary">Details</a>
+                        <button type="button" class="btn-sm btn-outline why-trigger" 
+                                data-title="{{ sim_movie.title }}" 
+                                data-score="{{ sim_movie.score }}"
+                                data-reasons='[{% for r in sim_movie.reasons %}"{{ r }}"{% if not loop.last %},{% endif %}{% endfor %}]'>
+                            <i class="fas fa-circle-question"></i> Why?
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Modal for Why This Recommendation -->
+<div id="why-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 id="modal-movie-title">Why this movie?</h3>
+            <button type="button" class="modal-close" id="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-match-rate">
+                <span class="modal-badge"><i class="fas fa-bolt"></i> <span id="modal-match-score">0</span>% AI Match</span>
+                <p>Based on content features compared with <strong>{{ movie.title }}</strong></p>
+            </div>
+            <ul id="modal-reasons-list" class="reasons-list"></ul>
+        </div>
+    </div>
+</div>
+
+<script>
+// Smooth scroll for AI recommendations button
+document.querySelectorAll('.scroll-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+});
+
+// Modal Logic for "Why This Movie?"
+const modal = document.getElementById('why-modal');
+const modalClose = document.getElementById('modal-close-btn');
+const modalTitle = document.getElementById('modal-movie-title');
+const modalScore = document.getElementById('modal-match-score');
+const modalReasons = document.getElementById('modal-reasons-list');
+
+document.querySelectorAll('.why-trigger').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const title = this.dataset.title;
+        const score = this.dataset.score || '';
+        let reasons = [];
+        try {
+            reasons = JSON.parse(this.dataset.reasons);
+        } catch(e) {
+            reasons = ["Similar thematic content and genre affinities"];
+        }
+        
+        modalTitle.textContent = title;
+        modalScore.textContent = score;
+        modalReasons.innerHTML = reasons.map(r => `<li><i class="fas fa-check-circle"></i> <span>${r}</span></li>`).join('');
+        modal.style.display = 'flex';
+    });
+});
+
+if (modalClose) {
+    modalClose.addEventListener('click', () => { modal.style.display = 'none'; });
+}
+if (modal) {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+    });
+}
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal) modal.style.display = 'none';
+});
+</script>
+{% endblock %}

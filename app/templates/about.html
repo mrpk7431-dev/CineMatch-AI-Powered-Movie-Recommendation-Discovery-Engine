@@ -1,0 +1,378 @@
+{% extends 'base.html' %}
+
+{% block title %}System Workflow & Architecture - CineMind AI{% endblock %}
+
+{% block content %}
+<div class="about-page">
+    
+    <!-- Hero Header -->
+    <div class="about-hero">
+        <div class="about-badge">
+            <i class="fas fa-microchip"></i>
+            <span>SYSTEM ARCHITECTURE & ML WORKFLOW</span>
+        </div>
+        <h1 class="about-title">How CineMind Works</h1>
+        <p class="about-subtitle">An end-to-end overview of our Natural Language Processing, Machine Learning recommendation pipeline, and dynamic dual-source data architecture.</p>
+        
+        <!-- Quick Stats Matrix -->
+        <div class="system-stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-database"></i></div>
+                <div class="stat-info">
+                    <span class="stat-val">4,800+</span>
+                    <span class="stat-lbl">Curated Movies</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-project-diagram"></i></div>
+                <div class="stat-info">
+                    <span class="stat-val">5,000</span>
+                    <span class="stat-lbl">TF-IDF Vector Features</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-bolt"></i></div>
+                <div class="stat-info">
+                    <span class="stat-val">&lt; 15ms</span>
+                    <span class="stat-lbl">Similarity Matrix Query</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+                <div class="stat-info">
+                    <span class="stat-val">1980 - 2026</span>
+                    <span class="stat-lbl">Year-Wise Rankings</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Workflow Diagram Section -->
+    <div class="diagram-section">
+        <div class="diagram-header">
+            <span class="sub-badge"><i class="fas fa-sitemap"></i> ARCHITECTURE DIAGRAM</span>
+            <h2>End-to-End System Workflow</h2>
+            <p>Visual map illustrating data ingestion, preprocessing, vectorization, mathematical similarity, and presentation.</p>
+        </div>
+
+        <div class="flowchart-container">
+            
+            <!-- STAGE 1: INGESTION -->
+            <div class="flow-stage stage-1">
+                <div class="stage-header">
+                    <div class="stage-tag">STAGE 01</div>
+                    <h3>Data Ingestion Layer</h3>
+                </div>
+                <div class="stage-nodes">
+                    <div class="flow-node">
+                        <div class="node-icon"><i class="fas fa-table"></i></div>
+                        <div class="node-content">
+                            <h4>Offline Corpus (TMDB 5000)</h4>
+                            <p>Movie titles, plot overviews, genres, cast, crew, and vote statistics serialized in Pickle format.</p>
+                            <span class="node-pill">Static Base Dataset</span>
+                        </div>
+                    </div>
+                    <div class="flow-node">
+                        <div class="node-icon"><i class="fas fa-cloud-arrow-down"></i></div>
+                        <div class="node-content">
+                            <h4>Live OMDb REST API</h4>
+                            <p>Real-time ingestion of recent releases (2024-2026), posters, IMDb ratings, and box office awards.</p>
+                            <span class="node-pill online-pill">Dynamic Ingestion</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FLOW CONNECTOR ARROW -->
+            <div class="flow-arrow-row">
+                <div class="flow-line">
+                    <div class="flow-pulse"></div>
+                </div>
+                <span class="arrow-label"><i class="fas fa-arrow-down"></i> Raw Data Ingestion &amp; API Fallback</span>
+            </div>
+
+            <!-- STAGE 2: PREPROCESSING & FEATURE ENGINEERING -->
+            <div class="flow-stage stage-2">
+                <div class="stage-header">
+                    <div class="stage-tag">STAGE 02</div>
+                    <h3>NLP &amp; Feature Engineering</h3>
+                </div>
+                <div class="stage-nodes">
+                    <div class="flow-node">
+                        <div class="node-icon"><i class="fas fa-filter"></i></div>
+                        <div class="node-content">
+                            <h4>Data Cleaning &amp; Imputation</h4>
+                            <p>Handled missing overviews, sanitized duplicate entries, stripped spaces from multi-word names (e.g. "Tom Hanks" &rarr; "TomHanks").</p>
+                        </div>
+                    </div>
+                    <div class="flow-node">
+                        <div class="node-icon"><i class="fas fa-blender"></i></div>
+                        <div class="node-content">
+                            <h4>"Metadata Soup" Synthesis</h4>
+                            <p>Combined <strong>Director + Top 3 Cast Members + Genres + Keywords + Plot Overview</strong> into a rich textual bag of features for each movie.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FLOW CONNECTOR ARROW -->
+            <div class="flow-arrow-row">
+                <div class="flow-line">
+                    <div class="flow-pulse"></div>
+                </div>
+                <span class="arrow-label"><i class="fas fa-arrow-down"></i> Unified Feature String Matrix</span>
+            </div>
+
+            <!-- STAGE 3: MACHINE LEARNING & MATHEMATICS -->
+            <div class="flow-stage stage-3">
+                <div class="stage-header">
+                    <div class="stage-tag">STAGE 03</div>
+                    <h3>AI / Machine Learning Engine</h3>
+                </div>
+                <div class="stage-nodes three-cols">
+                    <div class="flow-node highlight-node">
+                        <div class="node-icon"><i class="fas fa-brain"></i></div>
+                        <div class="node-content">
+                            <h4>TF-IDF Vectorizer</h4>
+                            <p>Transforms text soup into a 5,000-dimensional sparse numerical vector space with term-frequency and inverse-document-frequency weighting.</p>
+                        </div>
+                    </div>
+                    <div class="flow-node highlight-node">
+                        <div class="node-icon"><i class="fas fa-drafting-compass"></i></div>
+                        <div class="node-content">
+                            <h4>Cosine Similarity Matrix</h4>
+                            <p>Calculates the dot product between normalized movie vectors to measure semantic cosine angles ($\theta$) in $n$-dimensional space.</p>
+                        </div>
+                    </div>
+                    <div class="flow-node highlight-node">
+                        <div class="node-icon"><i class="fas fa-award"></i></div>
+                        <div class="node-content">
+                            <h4>Bayesian Weighted Rating</h4>
+                            <p>Calculates IMDB-style weighted score: $WR = \frac{v}{v+m}R + \frac{m}{v+m}C$ to eliminate vote-count bias for Top 20 lists.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FLOW CONNECTOR ARROW -->
+            <div class="flow-arrow-row">
+                <div class="flow-line">
+                    <div class="flow-pulse"></div>
+                </div>
+                <span class="arrow-label"><i class="fas fa-arrow-down"></i> Ranked Top Similarities &amp; Dynamic Scoring</span>
+            </div>
+
+            <!-- STAGE 4: SERVING & USER INTERACTION -->
+            <div class="flow-stage stage-4">
+                <div class="stage-header">
+                    <div class="stage-tag">STAGE 04</div>
+                    <h3>Serving, Fallback &amp; UI Layer</h3>
+                </div>
+                <div class="stage-nodes">
+                    <div class="flow-node">
+                        <div class="node-icon"><i class="fas fa-sync-alt"></i></div>
+                        <div class="node-content">
+                            <h4>Real-Time On-The-Fly Vectorizer</h4>
+                            <p>If user queries a brand new online movie (e.g. 2026/2024 releases), the model vectorizes its live plot overview on-the-fly and scores against trained vectors.</p>
+                        </div>
+                    </div>
+                    <div class="flow-node">
+                        <div class="node-icon"><i class="fas fa-desktop"></i></div>
+                        <div class="node-content">
+                            <h4>Flask + Waitress Production Web UI</h4>
+                            <p>Interactive autocomplete search, Top 20 Year-Wise explorer, high-definition posters, match scores, and similarity modal breakdown.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Deep-Dive Detailed Breakdown -->
+    <div class="deep-dive-section">
+        <div class="section-title-wrap">
+            <h2 class="section-title">Workflow In Detail: Phase by Phase</h2>
+            <span class="section-badge">Technical Breakdown</span>
+        </div>
+
+        <div class="detail-cards-grid">
+            
+            <!-- Detail 1 -->
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <div class="card-num">01</div>
+                    <div class="card-header-text">
+                        <h3>Dual-Source Data Ingestion Engine</h3>
+                        <span class="card-tech"><i class="fas fa-code"></i> pandas, pickle, omdbapi</span>
+                    </div>
+                </div>
+                <div class="detail-card-body">
+                    <p>To deliver both historical depth and current relevance, CineMind combines two complementary data streams:</p>
+                    <ul class="detail-list">
+                        <li><strong>Offline Corpus:</strong> Over 4,800 movies with detailed budgets, revenues, keywords, cast, crew, and overviews sourced from TMDB 5,000 dataset.</li>
+                        <li><strong>Live Online API:</strong> Integrated with OMDb REST API via parallel <code>ThreadPoolExecutor</code> workers to fetch real-time 2024–2026 releases, posters, and IMDb metrics.</li>
+                        <li><strong>In-Memory LRU Cache:</strong> High-speed caching reduces redundant HTTP calls and guarantees instantaneous page response.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Detail 2 -->
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <div class="card-num">02</div>
+                    <div class="card-header-text">
+                        <h3>NLP Preprocessing &amp; "Metadata Soup"</h3>
+                        <span class="card-tech"><i class="fas fa-code"></i> regex, string-sanitization</span>
+                    </div>
+                </div>
+                <div class="detail-card-body">
+                    <p>Raw text data is noisy. We implement an intensive feature extraction pipeline to ensure clean semantic representation:</p>
+                    <ul class="detail-list">
+                        <li><strong>Entity Transformation:</strong> Names like <em>"Christopher Nolan"</em> are transformed to <code>"ChristopherNolan"</code> so that "Christopher" is not confused with other individuals.</li>
+                        <li><strong>Weighted Metadata Soup:</strong> Combines director names (high importance), top 3 starring actors, key genre tags, plot keywords, and tokenized overview words into a single semantic string.</li>
+                        <li><strong>Noise Reduction:</strong> English stop words (<em>the, and, in, with</em>) and non-alphanumeric punctuation are removed.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Detail 3 -->
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <div class="card-num">03</div>
+                    <div class="card-header-text">
+                        <h3>TF-IDF Vector Space Modeling</h3>
+                        <span class="card-tech"><i class="fas fa-code"></i> scikit-learn TfidfVectorizer</span>
+                    </div>
+                </div>
+                <div class="detail-card-body">
+                    <p>Text cannot be compared directly by computers. We map the text into a 5,000-dimensional numerical vector space using <strong>Term Frequency-Inverse Document Frequency (TF-IDF)</strong>:</p>
+                    <div class="math-box">
+                        $$\text{TF-IDF}(t, d, D) = \text{TF}(t, d) \times \log\left(\frac{1 + |D|}{1 + |\{d \in D : t \in d\}|}\right) + 1$$
+                    </div>
+                    <p>Words frequent in a single movie but rare across the entire database (e.g. <em>"inception", "hobbit", "vampire"</em>) receive high mathematical weight, capturing distinct thematic signals.</p>
+                </div>
+            </div>
+
+            <!-- Detail 4 -->
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <div class="card-num">04</div>
+                    <div class="card-header-text">
+                        <h3>Cosine Similarity Calculation</h3>
+                        <span class="card-tech"><i class="fas fa-code"></i> numpy, linear_kernel</span>
+                    </div>
+                </div>
+                <div class="detail-card-body">
+                    <p>Instead of Euclidean distance (which is distorted by text length), we compute the <strong>cosine of the angle</strong> between vector trajectories:</p>
+                    <div class="math-box">
+                        $$\cos(\theta) = \frac{\vec{A} \cdot \vec{B}}{\|\vec{A}\| \|\vec{B}\|} = \frac{\sum_{i=1}^{n} A_i B_i}{\sqrt{\sum_{i=1}^{n} A_i^2} \sqrt{\sum_{i=1}^{n} B_i^2}}$$
+                    </div>
+                    <ul class="detail-list">
+                        <li>A similarity score of <strong>1.0 (100%)</strong> indicates identical semantic orientation.</li>
+                        <li>A score of <strong>0.0 (0%)</strong> indicates orthogonal, completely unrelated content.</li>
+                        <li>Precomputed matrix allows retrieving Top 10 recommendations in under <strong>15 milliseconds</strong>.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Detail 5 -->
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <div class="card-num">05</div>
+                    <div class="card-header-text">
+                        <h3>Bayesian Weighted Rating Algorithm</h3>
+                        <span class="card-tech"><i class="fas fa-code"></i> IMDB Bayesian Formula</span>
+                    </div>
+                </div>
+                <div class="detail-card-body">
+                    <p>A movie with one 10/10 rating shouldn't rank above a classic with 2,000,000 votes averaging 9.2. We apply Bayesian weighted score:</p>
+                    <div class="math-box">
+                        $$WR = \left(\frac{v}{v + m}\right) \times R + \left(\frac{m}{v + m}\right) \times C$$
+                    </div>
+                    <ul class="detail-list">
+                        <li><strong>$v$</strong>: Number of user votes for the movie.</li>
+                        <li><strong>$m$</strong>: Minimum votes required to be considered (85th percentile threshold).</li>
+                        <li><strong>$R$</strong>: Average rating of the movie (0–10).</li>
+                        <li><strong>$C$</strong>: Mean rating across the entire catalog (~6.0).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Detail 6 -->
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <div class="card-num">06</div>
+                    <div class="card-header-text">
+                        <h3>Dynamic Real-Time Online Fallback</h3>
+                        <span class="card-tech"><i class="fas fa-code"></i> on-the-fly vector transform</span>
+                    </div>
+                </div>
+                <div class="detail-card-body">
+                    <p>What happens when a user selects a brand new 2026 or 2024 movie that wasn't in the original training set?</p>
+                    <ul class="detail-list">
+                        <li><strong>Live Query:</strong> Fetch the movie's plot, director, and cast via OMDb API in real time.</li>
+                        <li><strong>Transform:</strong> Pass the new metadata string through the trained <code>movie_vectorizer.pkl</code> to project it into the existing 5,000-dimensional space.</li>
+                        <li><strong>Dot Product:</strong> Calculate cosine similarity between this single new vector and all 4,800 existing movies.</li>
+                        <li><strong>Result:</strong> Seamless, accurate recommendations even for unreleased or brand new films!</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Tech Stack Matrix -->
+    <div class="tech-matrix-section">
+        <div class="section-title-wrap">
+            <h2 class="section-title">Production Technology Stack</h2>
+            <span class="section-badge">Full Architecture</span>
+        </div>
+
+        <div class="tech-grid">
+            <div class="tech-card">
+                <div class="tech-card-icon"><i class="fab fa-python"></i></div>
+                <h4>Machine Learning</h4>
+                <div class="tech-pills">
+                    <span>Scikit-Learn</span>
+                    <span>NumPy</span>
+                    <span>TF-IDF</span>
+                    <span>Cosine Similarity</span>
+                    <span>Pickle</span>
+                </div>
+            </div>
+            <div class="tech-card">
+                <div class="tech-card-icon"><i class="fas fa-server"></i></div>
+                <h4>Backend &amp; Serving</h4>
+                <div class="tech-pills">
+                    <span>Python 3.10+</span>
+                    <span>Flask 3.0</span>
+                    <span>Waitress WSGI</span>
+                    <span>Concurrent.Futures</span>
+                </div>
+            </div>
+            <div class="tech-card">
+                <div class="tech-card-icon"><i class="fas fa-database"></i></div>
+                <h4>Data &amp; APIs</h4>
+                <div class="tech-pills">
+                    <span>Pandas</span>
+                    <span>OMDb REST API</span>
+                    <span>TMDB 5000 Corpus</span>
+                    <span>Memory Caching</span>
+                </div>
+            </div>
+            <div class="tech-card">
+                <div class="tech-card-icon"><i class="fas fa-palette"></i></div>
+                <h4>Design &amp; Frontend</h4>
+                <div class="tech-pills">
+                    <span>Vanilla CSS3</span>
+                    <span>Glassmorphism</span>
+                    <span>Heavy Jack Font</span>
+                    <span>FontAwesome 6</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

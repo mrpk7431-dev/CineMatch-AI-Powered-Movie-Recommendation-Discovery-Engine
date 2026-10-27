@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ query }} - CineMind AI{% endblock %}
+
+{% block content %}
+<div class="results-page">
+    {% if is_recommendation and original_movie %}
+    <div class="original-movie-banner">
+        <div class="banner-badge"><i class="fas fa-wand-magic-sparkles"></i> AI Recommendation Engine</div>
+        <h2>Because you liked <span class="highlight">{{ original_movie.title }}</span></h2>
+        <p>Recommendations generated via TF-IDF Vector Space & Cosine Similarity matching</p>
+    </div>
+    {% else %}
+    <div class="results-header-box">
+        <div class="section-tag-row">
+            <span class="results-badge"><i class="fas fa-trophy"></i> CineMind Year Explorer</span>
+            <span class="results-count">{{ results|length }} movies listed</span>
+        </div>
+        <h1 class="results-heading">{{ query }}</h1>
+        <p class="results-subheading">Ranked top 20 based on audience ratings, popularity, and machine learning composite scores.</p>
+    </div>
+
+    <!-- Quick Year Switcher Bar -->
+    <div class="year-filter-wrapper">
+        <div class="year-filter-label"><i class="far fa-calendar-alt"></i> Switch Year:</div>
+        <div class="year-pills-bar results-year-bar">
+            {% for y in available_years %}
+            <a href="/explore?year={{ y.value }}{% if selected_genre %}&genre={{ selected_genre }}{% endif %}" 
+               class="year-pill {% if selected_year == y.value %}active-year-pill{% elif y.is_current and not selected_year %}current-year-pill{% endif %}">
+                {% if y.is_current %}<i class="fas fa-star current-star"></i>{% endif %}
+                {{ y.short_label }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="movie-grid">
+        {% if is_recommendation %}
+            {% for movie in recommendations %}
+            <div class="movie-card">
+                <span class="rank-badge rank-{{ loop.index if loop.index <= 3 else 'normal' }}">#{{ loop.index }}</span>
+                {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster" loading="lazy">
+                {% else %}
+                <div class="movie-poster placeholder-poster">
+                    <span>{{ movie.title[0] if movie.title else '?' }}</span>
+                    <p>No Poster Available</p>
+                </div>
+                {% endif %}
+                
+                <div class="movie-info">
+                    <h3>{{ movie.title }}</h3>
+                    <div class="movie-meta">
+                        <span class="year">{{ movie.release_year }}</span>
+                        <span class="rating">⭐ {{ movie.rating }}</span>
+                    </div>
+                    
+                    <div class="movie-genre">{{ movie.genre }}</div>
+                    
+                    {% if movie.score %}
+                    <div class="match-score">
+                        <div class="match-bar"><div class="match-fill" style="width: {{ movie.score }}%"></div></div>
+                        <span>{{ movie.score }}% Match</span>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="action-buttons">
+                        <a href="/movie/{{ movie.movie_id }}" class="btn-sm btn-secondary">View Details</a>
+                        <button type="button" class="btn-sm btn-outline why-trigger"
+                                data-title="{{ movie.title }}"
+                                data-score="{{ movie.score }}"
+                                data-reasons='[{% for r in movie.reasons %}"{{ r }}"{% if not loop.last %},{% endif %}{% endfor %}]'>
+                            Why this?
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            {% for movie in results %}
+            <div class="movie-card">
+                <span class="rank-badge rank-{{ loop.index if loop.index <= 3 else 'normal' }}">#{{ loop.index }}</span>
+                
+                <a href="/movie/{{ movie.movie_id }}" class="poster-link">
+                    {% if movie.poster_url %}
+                    <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster" loading="lazy">
+                    {% else %}
+                    <div class="movie-poster placeholder-poster">
+                        <span>{{ movie.title[0] if movie.title else '?' }}</span>
+                        <p>No Poster Available</p>
+                    </div>
+                    {% endif %}
+                </a>
+                
+                <div class="movie-info">
+                    <a href="/movie/{{ movie.movie_id }}" class="title-link">
+                        <h3>{{ movie.title }}</h3>
+                    </a>
+                    
+                    <div class="movie-meta">
+                        <span class="year"><i class="far fa-calendar"></i> {{ movie.release_year }}</span>
+                        <span class="rating">⭐ {{ movie.rating }}</span>
+                    </div>
+                    
+                    <div class="movie-genre">{{ movie.genre }}</div>
+                    
+                    <div class="card-bottom-actions">
+                        <a href="/movie/{{ movie.movie_id }}" class="btn-sm btn-secondary">
+                            <i class="fas fa-circle-info"></i> Details
+                        </a>
+                        <form action="/recommend" method="POST" class="inline-btn-form">
+                            <input type="hidden" name="movie" value="{{ movie.title }}">
+                            <button type="submit" class="btn-sm btn-outline-gold" title="Find similar movies using AI">
+                                <i class="fas fa-wand-magic-sparkles"></i> AI Match
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+        
+        {% if (is_recommendation and recommendations|length == 0) or (not is_recommendation and results|length == 0) %}
+        <div class="no-results">
+            <i class="fas fa-film fa-3x" style="color: var(--text-muted); margin-bottom: 1rem;"></i>
+            <p>No movies found for this selection. Try choosing another year or genre.</p>
+            <a href="/" class="btn-secondary">Back to Home</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal for Why This Recommendation -->
+<div id="why-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 id="modal-movie-title">Why this movie?</h3>
+            <button type="button" class="modal-close" id="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-match-rate">
+                <span class="modal-badge"><i class="fas fa-bolt"></i> <span id="modal-match-score">0</span>% AI Match</span>
+                <p>Calculated based on trained ML vector content similarity</p>
+            </div>
+            <ul id="modal-reasons-list" class="reasons-list"></ul>
+        </div>
+    </div>
+</div>
+
+<script>
+// Modal Logic for "Why This Movie?"
+const modal = document.getElementById('why-modal');
+const modalClose = document.getElementById('modal-close-btn');
+const modalTitle = document.getElementById('modal-movie-title');
+const modalScore = document.getElementById('modal-match-score');
+const modalReasons = document.getElementById('modal-reasons-list');
+
+document.querySelectorAll('.why-trigger').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const title = this.dataset.title;
+        const score = this.dataset.score || '';
+        let reasons = [];
+        try {
+            reasons = JSON.parse(this.dataset.reasons);
+        } catch(e) {
+            reasons = ["Content features match your requested preferences"];
+        }
+        
+        modalTitle.textContent = title;
+        modalScore.textContent = score;
+        modalReasons.innerHTML = reasons.map(r => `<li><i class="fas fa-check-circle"></i> <span>${r}</span></li>`).join('');
+        modal.style.display = 'flex';
+    });
+});
+
+if (modalClose) {
+    modalClose.addEventListener('click', () => { modal.style.display = 'none'; });
+}
+if (modal) {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+    });
+}
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal) modal.style.display = 'none';
+});
+</script>
+{% endblock %}
